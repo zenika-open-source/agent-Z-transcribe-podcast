@@ -1,5 +1,6 @@
-# agent-Z-transcribe-podcast
-An IA Agent to transcibe podcasts
+# 🤖 Agent Z transcribe podcast
+
+This is an IA Agent to transcribe podcasts to be easily readable as a book.
 
 ## 🛠️ Configuration
 
@@ -36,11 +37,21 @@ export GOOGLE_CLOUD_PROJECT=<your projet>
 export GOOGLE_CLOUD_LOCATION=<location like europe-west1>
 ```
 
+- and run the `gcloud` command.
+
 ```sh
-gcloud run deploy my-cook-agent \
+gcloud run deploy agent-z-transcribe-podcast \
 --source . \
 --region $GOOGLE_CLOUD_LOCATION \
 --project $GOOGLE_CLOUD_PROJECT \
 --allow-unauthenticated \
 --set-env-vars="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI"
-``
+```
+
+
+## ✨Contribute
+
+Anyone can contribute to this project. For the moment, please add your question or purpose something in [a new issue](https://github.com/zenika-open-source/opensource-statistics/issues).
+
+![with love by zenika](https://img.shields.io/badge/With%20%E2%9D%A4%EF%B8%8F%20by-Zenika-b51432.svg?link=https://oss.zenika.com)
+
