@@ -35,6 +35,8 @@ To deploy on Cloud Run:
 ```sh 
 export GOOGLE_CLOUD_PROJECT=<your projet>
 export GOOGLE_CLOUD_LOCATION=<location like europe-west1>
+export GOOGLE_GENAI_USE_VERTEXAI=<true if you deploy on Google Cloud, else false>
+export GOOGLE_API_KEY=<your GOOGLE API KEY>
 ```
 
 - and run the `gcloud` command.
@@ -45,7 +47,9 @@ gcloud run deploy agent-z-transcribe-podcast \
 --region $GOOGLE_CLOUD_LOCATION \
 --project $GOOGLE_CLOUD_PROJECT \
 --allow-unauthenticated \
---set-env-vars="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI"
+--memory 1Gi \
+--max-instances 5 \
+--set-env-vars="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
 ```
 
 

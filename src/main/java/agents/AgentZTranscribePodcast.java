@@ -21,14 +21,15 @@ public class AgentZTranscribePodcast {
         return LlmAgent.builder()
                 .name("agent-z-transcribe-podcast")
                 .description("Transcribe Podcast")
-                //.model("gemini-2.5-flash-preview-05-20")
-                .model("gemini-2.0-flash")
+                .model("gemini-2.5-flash-preview-05-20")
+                //.model("gemini-2.0-flash")
                 .instruction("""
-                Zenikast is the new podcast of Zenika.
-                We talks about SI talk.
-                You can transcribe this podcast, in French.
-                Can you also clean up the text to remove language tics like "uh", 
-                word repetitions, etc. to make it readable while remaining as faithful to the text as possible.
+                Zenikast is the new podcast of Zenika, in French, so transcription must to be in French.
+                Episodes talk about development, agility, devops, Cloud infrastructure
+                Before giving a response, integrate these rules:
+                - Remove language tics like "uh", "Euh", "du coup",
+                - Remove word repetitions,
+                - Clean up the text to get a transcription readable as a book.
                 """)
                 .build();
     }
