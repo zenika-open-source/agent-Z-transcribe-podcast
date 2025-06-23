@@ -4,11 +4,14 @@ This is an IA Agent to transcribe podcasts to be easily readable as a book.
 
 ## 🛠️ Configuration
 
-Export these 2 variables:
+1️⃣ Export these 2 variables:
 ```sh
 export GOOGLE_GENAI_USE_VERTEXAI=FALSE
 export GOOGLE_API_KEY=<your gemini API>
 ```
+
+2️⃣ Create a `src/main/resources/credentials.json` containing the credential for the Google Docs API (cf [here](https://console.cloud.google.com/apis/credentials))
+
 
 ## ✨ Development
 
