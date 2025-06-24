@@ -48,7 +48,8 @@ gcloud run deploy agent-z-transcribe-podcast \
 --project $GOOGLE_CLOUD_PROJECT \
 --allow-unauthenticated \
 --memory 1Gi \
---max-instances 5 \
+--gpu 1 \
+--max-instances 1 \
 --set-env-vars="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
 ```
 
