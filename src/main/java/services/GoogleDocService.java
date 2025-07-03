@@ -5,6 +5,7 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -59,7 +60,8 @@ public class GoogleDocService {
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("test");
+        //Credential credential = new GoogleCredential().setAccessToken(accessToken);
         return credential;
     }
 
@@ -67,11 +69,12 @@ public class GoogleDocService {
         List<Request> requests = new ArrayList<>();
         requests.add(new Request().setInsertText(new InsertTextRequest()
                 .setText(text)
-                .setLocation(new Location().setIndex(25))));
+                .setLocation(new Location().setIndex(1))));
         BatchUpdateDocumentRequest body = new BatchUpdateDocumentRequest().setRequests(requests);
 
-        Document doc = new Document().setTitle("Transcription " + LocalDateTime.now().toString());
+        Document doc = new Document().setTitle("Zenikast-Transcription " + LocalDateTime.now().toString());
         doc = service.documents().create(doc).execute();
+
         service.documents().batchUpdate(doc.getDocumentId(), body).execute();
 
         System.out.println("Created document with title: " + doc.getTitle());
