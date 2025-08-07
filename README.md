@@ -26,7 +26,7 @@ or to your project with some agents (where `--adk.agents.source-dir` contains th
 mvn exec:java -Dexec.mainClass=com.google.adk.web.AdkWebServer -Dexec.classpathScope=compile  -Dexec.args="--server.port=8080 --adk.agents.source-dir=src/main/java/agents/"
 ```
 
-To run the UI, run this command and got to ```http://localhost:8080/dev-ui?```
+To run the UI, run this command and go to ```http://localhost:8080/dev-ui?```
 
 
 ## 🚀 Deployment
