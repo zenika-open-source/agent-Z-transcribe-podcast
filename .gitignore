@@ -5,3 +5,8 @@
 /dataSources.local.xml
 .DS_Store
 .idea
+*credentials.json
+/tokens/
+/target/
+.env
+out/
