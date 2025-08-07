@@ -16,9 +16,6 @@ import services.GoogleDocService;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.Scanner;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class AgentZTranscribePodcast {
@@ -44,7 +41,7 @@ public class AgentZTranscribePodcast {
                 - Remove language tics like "uh", "Euh", "du coup",
                 - Remove word repetitions,
                 - Clean up the text to get a transcription readable as a book.
-                Identify the person speaking and start the paragraph with his name, for example: 
+                Identify the person speaking and start the paragraph with his name, for example:
                     Martin Jean
                     <text>
                 """)
@@ -56,9 +53,8 @@ public class AgentZTranscribePodcast {
     public static void createTranscriptionGoogleDoc(@Schema(description = "The transcription", name = "transcription") String transcription) {
         System.out.println(" \uD83D\uDCDD Creating transcription Google Doc..." + transcription);
 
-        GoogleDocService googleDocService = null;
         try {
-            googleDocService = new GoogleDocService();
+            GoogleDocService googleDocService = new GoogleDocService();
             googleDocService.createDoc(transcription);
         } catch (GeneralSecurityException | IOException exception) {
             throw new RuntimeException(exception);
@@ -78,8 +74,6 @@ public class AgentZTranscribePodcast {
                 runner.runAsync(session.userId(), session.id(), userMsg);
 
         System.out.print("\n\uD83E\uDD16 Agent > ");
-        events.blockingForEach(event -> {
-            System.out.println(event.stringifyContent());
-        });
+        events.blockingForEach(event -> System.out.println(event.stringifyContent()));
     }
 }

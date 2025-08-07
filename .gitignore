@@ -8,3 +8,5 @@
 *credentials.json
 /tokens/
 /target/
+.env
+out/

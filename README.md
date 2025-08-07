@@ -12,26 +12,28 @@ export GOOGLE_API_KEY=<your gemini API>
 
 2️⃣ Create a `src/main/resources/credentials.json` containing the credential for the Google Docs API (cf [here](https://console.cloud.google.com/apis/credentials))
 
-
 ## ✨ Development
 
-To run your agent :
+To run your agent (if you have only one specific agent):
 
 ```sh
 mvn compile exec:java -Dexec.mainClass="agents.AgentZTranscribePodcast"
 ```
 
+or to your project with some agents (where `--adk.agents.source-dir` contains the directory where agents are located):
+
+```sh
+mvn exec:java -Dexec.mainClass=com.google.adk.web.AdkWebServer -Dexec.classpathScope=compile  -Dexec.args="--server.port=8080 --adk.agents.source-dir=src/main/java/agents/"
+```
+
 To run the UI, run this command and got to ```http://localhost:8080/dev-ui?```
 
-```
-mvn exec:java \
-    -Dexec.mainClass="com.google.adk.web.AdkWebServer" \
-    -Dexec.classpathScope="compile"
-```
 
 ## 🚀 Deployment
 
 To deploy on Cloud Run:
+
+- authentification on GCP with `gcloud auth login`
 
 - configure settings exporting variables:
 
@@ -42,17 +44,26 @@ export GOOGLE_GENAI_USE_VERTEXAI=<true if you deploy on Google Cloud, else false
 export GOOGLE_API_KEY=<your GOOGLE API KEY>
 ```
 
+or adding them into a `.env` file (cf `env-template` file)
+```
+export GCLOUD_PROJECT=
+export GCLOUD_LOCATION=europe-west1
+export GCLOUD_GENAI_USE_VERTEXAI=FALSE
+export GOOGLE_API_KEY=
+```
+
 - and run the `gcloud` command.
 
 ```sh
 gcloud run deploy agent-z-transcribe-podcast \
 --source . \
---region $GOOGLE_CLOUD_LOCATION \
---project $GOOGLE_CLOUD_PROJECT \
+--region $GCLOUD_LOCATION \
+--project $GCLOUD_PROJECT \
 --allow-unauthenticated \
 --memory 1Gi \
---max-instances 5 \
---set-env-vars="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
+--max-instances 1 \
+--set-env-vars="GOOGLE_CLOUD_PROJECT=$GCLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GCLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GCLOUD_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
+
 ```
 
 
