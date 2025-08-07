@@ -14,6 +14,8 @@ import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.docs.v1.Docs;
 import com.google.api.services.docs.v1.DocsScopes;
 import com.google.api.services.docs.v1.model.*;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
 import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
@@ -33,14 +35,19 @@ public class GoogleDocService {
 
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
-    private static final List<String> SCOPES = List.of(DocsScopes.DOCUMENTS);
+    private static final List<String> SCOPES = List.of(DocsScopes.DOCUMENTS, DriveScopes.DRIVE_FILE);
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
-    private static Docs service;
+    private static Docs docsService;
+    private static Drive driveService;
 
     public GoogleDocService() throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        service = new Docs.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        Credential credentials = getCredentials(HTTP_TRANSPORT);
+        docsService = new Docs.Builder(HTTP_TRANSPORT, JSON_FACTORY, credentials)
+                .setApplicationName("Agent Z Transcription")
+                .build();
+        driveService = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credentials)
                 .setApplicationName("Agent Z Transcription")
                 .build();
     }
@@ -66,6 +73,10 @@ public class GoogleDocService {
     }
 
     public static void createDoc(String text) throws IOException {
+        createDoc(text, null);
+    }
+
+    public static void createDoc(String text, String folderId) throws IOException {
         List<Request> requests = new ArrayList<>();
         requests.add(new Request().setInsertText(new InsertTextRequest()
                 .setText(text)
@@ -73,9 +84,16 @@ public class GoogleDocService {
         BatchUpdateDocumentRequest body = new BatchUpdateDocumentRequest().setRequests(requests);
 
         Document doc = new Document().setTitle("Zenikast-Transcription " + LocalDateTime.now().toString());
-        doc = service.documents().create(doc).execute();
+        doc = docsService.documents().create(doc).execute();
 
-        service.documents().batchUpdate(doc.getDocumentId(), body).execute();
+        docsService.documents().batchUpdate(doc.getDocumentId(), body).execute();
+
+        if (folderId != null && !folderId.isEmpty()) {
+            driveService.files().update(doc.getDocumentId(), null)
+                    .setAddParents(folderId)
+                    .setFields("id, parents")
+                    .execute();
+        }
 
         System.out.println("Created document with title: " + doc.getTitle());
     }
