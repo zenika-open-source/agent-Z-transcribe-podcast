@@ -4,7 +4,6 @@ WORKDIR /app
 
 COPY pom.xml .
 COPY src ./src
-COPY Dockerfile .
 
 RUN mvn dependency:go-offline -B
 RUN mvn compile -B

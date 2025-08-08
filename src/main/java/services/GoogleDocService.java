@@ -5,7 +5,6 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -25,11 +24,13 @@ import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class GoogleDocService {
+
+    private static final Logger logger = Logger.getLogger(GoogleDocService.class.getName());
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
@@ -38,16 +39,18 @@ public class GoogleDocService {
     private static final List<String> SCOPES = List.of(DocsScopes.DOCUMENTS, DriveScopes.DRIVE_FILE);
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
-    private static Docs docsService;
     private static Drive driveService;
+    private static Docs docsService;
 
     public GoogleDocService() throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         Credential credentials = getCredentials(HTTP_TRANSPORT);
-        docsService = new Docs.Builder(HTTP_TRANSPORT, JSON_FACTORY, credentials)
+
+        driveService = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credentials)
                 .setApplicationName("Agent Z Transcription")
                 .build();
-        driveService = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credentials)
+
+        docsService = new Docs.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName("Agent Z Transcription")
                 .build();
     }
@@ -72,11 +75,9 @@ public class GoogleDocService {
         return credential;
     }
 
-    public static void createDoc(String text) throws IOException {
-        createDoc(text, null);
-    }
-
     public static void createDoc(String text, String folderId) throws IOException {
+        logger.info("🌈 Create doc in this folder: " + folderId);
+
         List<Request> requests = new ArrayList<>();
         requests.add(new Request().setInsertText(new InsertTextRequest()
                 .setText(text)
@@ -86,15 +87,9 @@ public class GoogleDocService {
         Document doc = new Document().setTitle("Zenikast-Transcription " + LocalDateTime.now().toString());
         doc = docsService.documents().create(doc).execute();
 
-        docsService.documents().batchUpdate(doc.getDocumentId(), body).execute();
+        driveService.files().update(doc.getDocumentId(), null).setAddParents(folderId).execute();
 
-        if (folderId != null && !folderId.isEmpty()) {
-            driveService.files().update(doc.getDocumentId(), null)
-                    .setAddParents(folderId)
-                    .setFields("id, parents")
-                    .execute();
-        }
+        logger.info("✅ Created document with title: " + doc.getTitle());
 
-        System.out.println("Created document with title: " + doc.getTitle());
     }
 }
