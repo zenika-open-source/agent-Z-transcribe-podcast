@@ -6,8 +6,8 @@ import com.google.adk.events.Event;
 import com.google.adk.runner.InMemoryRunner;
 import com.google.adk.sessions.Session;
 import com.google.adk.tools.Annotations.Schema;
+import com.google.adk.tools.BaseTool;
 import com.google.adk.tools.FunctionTool;
-import com.google.common.collect.ImmutableList;
 import com.google.genai.types.Content;
 import com.google.genai.types.Part;
 import io.reactivex.rxjava3.core.Flowable;
@@ -16,9 +16,14 @@ import services.GoogleDocService;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 @Component
 public class AgentZTranscribePodcast {
+
+    private static final Logger logger = Logger.getLogger(AgentZTranscribePodcast.class.getName());
 
     private static final String APP_NAME = "agent-z-transcribe-podcast";
 
@@ -29,11 +34,14 @@ public class AgentZTranscribePodcast {
     public static BaseAgent initAgent() {
 
         var createDocTranscription = FunctionTool.create(AgentZTranscribePodcast.class, "createTranscriptionGoogleDoc");
+        List<BaseTool> allTools = new ArrayList<>();
+        allTools.add(createDocTranscription);
+        logger.info("🌈 Tools: " + allTools.toString());
 
         return LlmAgent.builder()
                 .name("agent-z-transcribe-podcast")
                 .description("Transcribe Podcast")
-                .model("gemini-2.5-flash-preview-05-20")
+                .model("gemini-2.5-pro")
                 .instruction("""
                 Zenikast is the new podcast of Zenika, in French, so transcription must to be in French.
                 Episodes talk about development, agility, devops, Cloud infrastructure
@@ -45,17 +53,17 @@ public class AgentZTranscribePodcast {
                     Martin Jean
                     <text>
                 """)
-                .tools(ImmutableList.of(createDocTranscription))
+                .tools(allTools)
                 .build();
     }
 
     @Schema(description = "Create a Google Doc to save the transcription.")
     public static void createTranscriptionGoogleDoc(@Schema(description = "The transcription", name = "transcription") String transcription) {
-        System.out.println(" \uD83D\uDCDD Creating transcription Google Doc..." + transcription);
+        logger.info("🌈 Creating transcription Google Doc...");
 
         try {
             GoogleDocService googleDocService = new GoogleDocService();
-            googleDocService.createDoc(transcription);
+            googleDocService.createDoc(transcription, "12PdIadqBxkPdW3rxgLO-8lVCk8JbIPIk");
         } catch (GeneralSecurityException | IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -73,7 +81,7 @@ public class AgentZTranscribePodcast {
         Flowable<Event> events =
                 runner.runAsync(session.userId(), session.id(), userMsg);
 
-        System.out.print("\n\uD83E\uDD16 Agent > ");
+        logger.info("🌈 Agent > ");
         events.blockingForEach(event -> System.out.println(event.stringifyContent()));
     }
 }
