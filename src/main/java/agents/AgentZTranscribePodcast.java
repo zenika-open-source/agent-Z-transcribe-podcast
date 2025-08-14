@@ -27,9 +27,11 @@ public class AgentZTranscribePodcast {
 
     private static final String APP_NAME = "agent-z-transcribe-podcast";
 
-    private static final String DEFAULT_INPUT = "Donne moi la transcription de cet épisode";
+    private static final String DEFAULT_INPUT = "Donne moi la transcription de cet épisode et enregistre la dans un Google Doc";
 
     public static BaseAgent ROOT_AGENT = initAgent();
+
+    public static final String ID_DRIVE_FOLDER = "16M5gxM0QhBMaW6_4kSL7cpELxiBiL6Cx";
 
     public static BaseAgent initAgent() {
 
@@ -63,7 +65,7 @@ public class AgentZTranscribePodcast {
 
         try {
             GoogleDocService googleDocService = new GoogleDocService();
-            googleDocService.createDoc(transcription, "12PdIadqBxkPdW3rxgLO-8lVCk8JbIPIk");
+            googleDocService.createDoc(transcription, ID_DRIVE_FOLDER);
         } catch (GeneralSecurityException | IOException exception) {
             throw new RuntimeException(exception);
         }

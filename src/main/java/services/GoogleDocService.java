@@ -15,15 +15,18 @@ import com.google.api.services.docs.v1.DocsScopes;
 import com.google.api.services.docs.v1.model.*;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
+import com.google.cloud.secretmanager.v1.SecretManagerServiceClient;
+import com.google.cloud.secretmanager.v1.SecretVersionName;
+import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -34,35 +37,56 @@ public class GoogleDocService {
 
     private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
 
-    private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-
     private static final List<String> SCOPES = List.of(DocsScopes.DOCUMENTS, DriveScopes.DRIVE_FILE);
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
     private static Drive driveService;
     private static Docs docsService;
+    private static final String SECRET_VERSION_ID = "projects/zenikast/secrets/zenikast-transcription-agent-secret/versions/latest";
+
 
     public GoogleDocService() throws GeneralSecurityException, IOException {
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Credential credentials = getCredentials(HTTP_TRANSPORT);
+
+        Credential credentials = getCredentialsFromSecretManager(HTTP_TRANSPORT);
 
         driveService = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credentials)
-                .setApplicationName("Agent Z Transcription")
+                .setApplicationName("agent-z-transcribe-podcast")
                 .build();
 
         docsService = new Docs.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName("Agent Z Transcription")
+                .setApplicationName("agent-z-transcribe-podcast")
                 .build();
+    }
+
+    private static Credential getCredentialsFromSecretManager(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+        try (SecretManagerServiceClient client = SecretManagerServiceClient.create()) {
+            SecretVersionName secretVersionName = SecretVersionName.parse(SECRET_VERSION_ID);
+
+            ByteString payload = client.accessSecretVersion(secretVersionName).getPayload().getData();
+
+            GoogleClientSecrets secrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(payload.newInput()));
+
+            GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+                    HTTP_TRANSPORT, JSON_FACTORY, secrets, SCOPES)
+                    .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                    .setAccessType("offline")
+                    .build();
+            LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+            Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+
+            return credential;
+        }
     }
 
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT)
             throws IOException {
-        InputStream in = GoogleDocService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
-        if (in == null) {
-            throw new FileNotFoundException("Resource not found: " + CREDENTIALS_FILE_PATH);
-        }
+
+        String base64Json = System.getenv("GOOGLE_CLOUD_CREDENTIAL");
+        String clientSecretsJson = new String(Base64.getDecoder().decode(base64Json));
+
         GoogleClientSecrets clientSecrets =
-                GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+                GoogleClientSecrets.load(JSON_FACTORY, new StringReader(clientSecretsJson));
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
@@ -70,8 +94,8 @@ public class GoogleDocService {
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("test");
-        //Credential credential = new GoogleCredential().setAccessToken(accessToken);
+        Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("jean-philippe.baconnais@zenika.com");
+
         return credential;
     }
 
