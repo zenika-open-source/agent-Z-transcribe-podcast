@@ -25,6 +25,7 @@
             <version>${adk-java-version}</version>
         </dependency>
     </dependencies>
+
     <build>
         <plugins>
             <plugin>
@@ -45,6 +46,7 @@
                     <classpathScope>compile</classpathScope>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 </project>
