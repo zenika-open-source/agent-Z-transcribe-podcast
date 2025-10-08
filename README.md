@@ -84,7 +84,8 @@ Anyone can contribute to this project. For the moment, please add your question 
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://jeanphi-baconnais.gitlab.io/"><img src="https://avatars.githubusercontent.com/u/32639372?v=4?s=100" width="100px;" alt="Jean-Phi Baconnais"/><br /><sub><b>Jean-Phi Baconnais</b></sub></a><br /><a href="https://github.com/zenika-open-source/agent-Z-transcribe-podcast/commits?author=jeanphi-baconnais" title="Code">💻</a></td>
-    </tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.bbourgeois.dev"><img src="https://avatars.githubusercontent.com/u/20949060?v=4?s=100" width="100px;" alt="Benjamin"/><br /><sub><b>Benjamin</b></sub></a><br /><a href="https://github.com/zenika-open-source/agent-Z-transcribe-podcast/commits?author=bengeois" title="Code">💻</a></td>
+     </tr>
   </tbody>
 </table>
 
