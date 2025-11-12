@@ -17,13 +17,7 @@ export GOOGLE_API_KEY=<your gemini API>
 To run your agent (if you have only one specific agent):
 
 ```sh
-mvn compile exec:java -Dexec.mainClass="agents.AgentZTranscribePodcast"
-```
-
-or to your project with some agents (where `--adk.agents.source-dir` contains the directory where agents are located):
-
-```sh
-mvn exec:java -Dexec.mainClass=com.google.adk.web.AdkWebServer -Dexec.classpathScope=compile  -Dexec.args="--server.port=8080 --adk.agents.source-dir=src/main/java/agents/"
+mvn compile exec:java -Dexec.mainClass="agents.AgentZTranscribePodcast" -Dexec.args="--adk.agents.source-dir=."
 ```
 
 To run the UI, run this command and go to ```http://localhost:8080/dev-ui?```

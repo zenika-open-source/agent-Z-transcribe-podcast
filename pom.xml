@@ -9,7 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <adk-java-version>0.1.0</adk-java-version>
+        <adk-java-version>0.3.0</adk-java-version>
     </properties>
 
     <dependencies>
@@ -23,6 +23,20 @@
             <groupId>com.google.adk</groupId>
             <artifactId>google-adk-dev</artifactId>
             <version>${adk-java-version}</version>
+        </dependency>
+
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
