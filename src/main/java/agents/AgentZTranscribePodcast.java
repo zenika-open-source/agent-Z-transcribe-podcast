@@ -28,7 +28,7 @@ public class AgentZTranscribePodcast {
 
     public static BaseAgent initAgent() {
 
-        logger.info("🚧 Initializing agent Z Transcribe Podcast initialized");
+        logger.info("🤖 Initializing agent Z Transcribe Podcast initialized");
 
         return LlmAgent.builder()
                 .name("agent-z-transcribe-podcast")
@@ -42,7 +42,7 @@ public class AgentZTranscribePodcast {
                         - Remove word repetitions,
                         - Clean up the text to get a transcription readable as a book.
                         Identify the person speaking and start the paragraph with his name, for example:
-                            Martin Jean
+                            **Martin Jean**
                             <text>
                         """)
                 .build();
