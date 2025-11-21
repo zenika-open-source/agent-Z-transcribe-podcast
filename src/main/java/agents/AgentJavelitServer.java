@@ -32,8 +32,11 @@ public class AgentJavelitServer {
                 .createSession(APP_NAME, "agent-transcribe")
                 .blockingGet();
 
+        // Read port from environment variable (for Cloud Run) or default to 8888
+        int port = Integer.parseInt(System.getenv().getOrDefault("PORT", "8888"));
+
         // Start Javelit server
-        Server.builder(AgentJavelitServer::app, 8888).build().start();
+        Server.builder(AgentJavelitServer::app, port).build().start();
     }
 
     public static void app() {

@@ -9,7 +9,7 @@ RUN mvn dependency:go-offline -B
 RUN mvn compile -B
 
 # Set default port
-ENV PORT=8888
+ENV PORT=8080
 
 EXPOSE ${PORT}
 
