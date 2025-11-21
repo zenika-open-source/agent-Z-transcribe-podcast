@@ -15,12 +15,25 @@
     }
   },
   "skipCi": true,
+  "commit": false,
+  "commitType": "docs",
+  "commitConvention": "angular",
   "contributors": [
     {
       "login": "jeanphi-baconnais",
       "name": "Jean-Phi Baconnais",
       "avatar_url": "https://avatars.githubusercontent.com/u/32639372?v=4",
       "profile": "https://jeanphi-baconnais.gitlab.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      
+      "login": "bengeois",
+      "name": "Benjamin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20949060?v=4",
+      "profile": "https://www.bbourgeois.dev",
       "contributions": [
         "code"
       ]
@@ -31,5 +44,9 @@
   "repoType": "github",
   "repoHost": "https://github.com/zenika-open-source/agent-Z-transcribe-podcast",
   "commitType": "docs",
-  "commitConvention": "angular"
+  "commitConvention": "angular",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "projectName": "agent-Z-transcribe-podcast",
+  "projectOwner": "zenika-open-source"
 }
