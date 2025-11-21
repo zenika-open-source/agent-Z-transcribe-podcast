@@ -8,10 +8,11 @@ COPY src ./src
 RUN mvn dependency:go-offline -B
 RUN mvn compile -B
 
-EXPOSE 8080
+# Set default port
+ENV PORT=8080
 
-ENTRYPOINT ["mvn", "exec:java", \
-    "-Dexec.mainClass=com.google.adk.web.AdkWebServer", \
-    "-Dexec.classpathScope=compile", \
-    "-Dexec.args=--server.port=${PORT} --adk.agents.source-dir=src/main/java" \
-]
+EXPOSE ${PORT}
+
+# Use shell form to support command chaining with &&
+ENTRYPOINT ["sh", "-c", "mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) agents.AgentJavelitServer"]
+

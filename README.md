@@ -3,7 +3,7 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-This is an IA Agent to transcribe podcasts to be easily readable as a book.
+This is an IA Agent to transcribe podcasts to be easily readable as a book 🤘
 
 ## 🛠️ Configuration
 
@@ -13,18 +13,27 @@ export GOOGLE_GENAI_USE_VERTEXAI=FALSE
 export GOOGLE_API_KEY=<your gemini API>
 ```
 
-2️⃣ Create a `src/main/resources/credentials.json` containing the credential for the Google Docs API (cf [here](https://console.cloud.google.com/apis/credentials))
+2️⃣ Create a `.env file`. The template `.env-template` in avaiable.
 
 ## ✨ Development
 
 To run your agent (if you have only one specific agent):
 
 ```sh
-mvn compile exec:java -Dexec.mainClass="agents.AgentZTranscribePodcast" -Dexec.args="--adk.agents.source-dir=."
+mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) agents.AgentJavelitServer
 ```
 
-To run the UI, run this command and go to ```http://localhost:8080/dev-ui?```
+To run the UI, run this command and go to ```http://localhost:8888```
 
+![Agent Z Transcribe](docs/screen.png)
+
+## 🐳 Docker
+
+This app could be runned with Docker and this command 
+```
+docker build -t agent-z-transcribe-podcast
+docker run -p 8888:8888 -e PORT=8888  agent-z-transcribe-podcast
+```
 
 ## 🚀 Deployment
 
