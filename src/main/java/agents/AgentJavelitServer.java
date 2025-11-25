@@ -17,9 +17,6 @@ public class AgentJavelitServer {
     private static final String APP_NAME = "agent-z-transcribe-podcast";
     private static InMemoryRunner runner;
     private static Session session;
-    private static List<Message> chatHistory = new ArrayList<>();
-    private static boolean showHistory = false; // Track history visibility
-    private static boolean readingMode = true; // Track transcription mode (true = reading mode, false = strict)
 
     record Message(String sender, String text) {
     }
@@ -43,16 +40,24 @@ public class AgentJavelitServer {
         Jt.markdown("# 🎙️ Agent Z Transcribe Podcast").key("title").use();
         Jt.markdown("---").key("separator-1").use();
 
+        // Get session state for this user
+        @SuppressWarnings("unchecked")
+        List<Message> chatHistory = (List<Message>) Jt.sessionState()
+                .computeIfAbsent("chatHistory", k -> new ArrayList<Message>());
+
         // Options section with toggles
         Jt.markdown("## ⚙️ Options").key("options-title").use();
-        showHistory = Jt.toggle("Show Transcription History")
-                .value(showHistory)
+        boolean showHistory = Jt.toggle("Show Transcription History")
+                .value((Boolean) Jt.sessionState().getOrDefault("showHistory", false))
                 .key("toggle-show-history")
                 .use();
-        readingMode = Jt.toggle("Reading Mode (vs Strict Transcription)")
-                .value(readingMode)
+        Jt.sessionState().put("showHistory", showHistory);
+
+        boolean readingMode = Jt.toggle("Reading Mode (vs Strict Transcription)")
+                .value((Boolean) Jt.sessionState().getOrDefault("readingMode", true))
                 .key("toggle-reading-mode")
                 .use();
+        Jt.sessionState().put("readingMode", readingMode);
         Jt.markdown("---").key("separator-2").use();
 
         // Display chat history
@@ -61,6 +66,7 @@ public class AgentJavelitServer {
             boolean resetClicked = Jt.button("🗑️ Reset History").key("reset-button").use();
             if (resetClicked) {
                 chatHistory.clear();
+                Jt.sessionState().put("chatHistory", new ArrayList<Message>());
             }
 
             int index = 0;
@@ -107,8 +113,9 @@ public class AgentJavelitServer {
                 }
 
                 // Build prompt based on mode and context
+                boolean currentReadingMode = (Boolean) Jt.sessionState().getOrDefault("readingMode", true);
                 String prompt;
-                if (readingMode) {
+                if (currentReadingMode) {
                     prompt = "Donne la transcription de cet épisode de podcast. " +
                             "La transcription est arrangée pour être lisible comme un livre.";
                 } else {
