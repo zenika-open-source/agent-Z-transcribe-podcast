@@ -9,4 +9,5 @@
 /tokens/
 /target/
 .env
-out/
+/out/
+cp.txt
