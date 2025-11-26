@@ -29,7 +29,6 @@
       ]
     },
     {
-      
       "login": "bengeois",
       "name": "Benjamin",
       "avatar_url": "https://avatars.githubusercontent.com/u/20949060?v=4",
@@ -37,16 +36,19 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "glefloch",
+      "name": "Guillaume Le Floch",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1827790?v=4",
+      "profile": "https://github.com/glefloch",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "projectName": "agent-Z-communication-assistant",
+  "projectName": "agent-Z-transcribe-podcast",
   "projectOwner": "zenika-open-source",
   "repoType": "github",
-  "repoHost": "https://github.com/zenika-open-source/agent-Z-transcribe-podcast",
-  "commitType": "docs",
-  "commitConvention": "angular",
-  "repoType": "github",
-  "repoHost": "https://github.com",
-  "projectName": "agent-Z-transcribe-podcast",
-  "projectOwner": "zenika-open-source"
+  "repoHost": "https://github.com"
 }
