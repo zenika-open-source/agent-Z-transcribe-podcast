@@ -20,7 +20,7 @@ export GOOGLE_API_KEY=<your gemini API>
 To run your agent (if you have only one specific agent):
 
 ```sh
-mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) agents.AgentJavelitServer
+mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) ZPodcastTranscribe
 ```
 
 To run the UI, run this command and go to ```http://localhost:8888```
