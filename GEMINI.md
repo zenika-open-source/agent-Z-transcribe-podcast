@@ -14,12 +14,12 @@ To run the agent locally, you can use the following Maven commands:
 
 **Run a specific agent:**
 ```sh
-mvn compile exec:java -Dexec.mainClass="agents.AgentZTranscribePodcast"
+mvn compile exec:java -Dexec.mainClass="ZPodcastTranscribe"
 ```
 
 **Run the agent with the ADK web server and UI:**
 ```sh
-mvn exec:java -Dexec.mainClass=com.google.adk.web.AdkWebServer -Dexec.classpathScope=compile -Dexec.args="--server.port=8080 --adk.agents.source-dir=src/main/java/agents/"
+mvn exec:java -Dexec.mainClass=com.google.adk.web.AdkWebServer -Dexec.classpathScope=compile -Dexec.args="--server.port=8080 --adk.transcribe.source-dir=src/main/java/transcribe/"
 ```
 After running this command, the development UI is available at `http://localhost:8080/dev-ui`.
 
@@ -41,5 +41,5 @@ docker run -p 8080:8080 -e PORT=8080 agent-z-transcribe-podcast
 
 *   **Dependency Management:** The project uses Maven for managing dependencies. Dependencies are declared in the `pom.xml` file.
 *   **Testing:** The project is set up to use JUnit 5 for testing. Tests are located in the `src/test/java` directory.
-*   **Agent Logic:** The core agent logic and configuration are located in `src/main/java/agents/AgentZTranscribePodcast.java`. The `initAgent()` method in this class is the primary place where the agent's behavior is defined.
+*   **Agent Logic:** The core agent logic and configuration are located in `src/main/java/transcribe/AgentZTranscribePodcast.java`. The `initAgent()` method in this class is the primary place where the agent's behavior is defined.
 *   **Configuration:** The application requires API keys and other configuration to be set as environment variables or in a `.env` file, as documented in the `README.md`.
