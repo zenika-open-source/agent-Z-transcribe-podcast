@@ -1,4 +1,4 @@
-FROM maven:3.9-eclipse-temurin-21 AS builder
+FROM maven:3.9-eclipse-temurin-25 AS builder
 
 WORKDIR /app
 
@@ -14,5 +14,5 @@ ENV PORT=8080
 EXPOSE ${PORT}
 
 # Use shell form to support command chaining with &&
-ENTRYPOINT ["sh", "-c", "mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) agents.AgentJavelitServer"]
+ENTRYPOINT ["sh", "-c", "mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) ZPodcastTranscribe"]
 
