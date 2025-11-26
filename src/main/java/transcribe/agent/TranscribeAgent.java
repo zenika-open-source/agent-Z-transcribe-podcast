@@ -11,7 +11,7 @@ public class TranscribeAgent {
 
     public static BaseAgent build() {
 
-        logger.info("🤖 Initializing agent Z Transcribe Podcast initialized");
+        logger.info("🤖 Initializing agent Z Transcribe Podcast");
 
         return LlmAgent.builder()
                 .name("agent-z-transcribe-podcast")
