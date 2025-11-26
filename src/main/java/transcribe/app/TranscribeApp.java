@@ -7,11 +7,9 @@ import com.google.genai.types.Content;
 import com.google.genai.types.Part;
 import io.javelit.core.Jt;
 import io.javelit.core.JtUploadedFile;
-import io.javelit.core.Server;
+
 import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
-import transcribe.agent.TranscribeAgent;
-
 import java.util.ArrayList;
 import java.util.List;
 
