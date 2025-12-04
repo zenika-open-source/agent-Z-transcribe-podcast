@@ -19,7 +19,6 @@ public class TranscribeApp {
 
     private final Session session;
 
-
     public TranscribeApp(final InMemoryRunner runner, Session session) {
         this.runner = runner;
         this.session = session;
@@ -27,7 +26,6 @@ public class TranscribeApp {
 
     record Message(String sender, String text) {
     }
-
 
     public void run() {
         Jt.markdown("# 🎙️ Agent Z Transcribe Podcast").key("title").use();
@@ -38,19 +36,36 @@ public class TranscribeApp {
         List<Message> chatHistory = (List<Message>) Jt.sessionState()
                 .computeIfAbsent("chatHistory", k -> new ArrayList<Message>());
 
-        // Options section with toggles
-        Jt.markdown("## ⚙️ Options").key("options-title").use();
+        // Two-column layout
+        var cols = Jt.columns(2).key("main-columns").use();
+
+        // Left column - Upload and Context section
+        Jt.markdown("## 🎶 Upload Audio File").key("upload-title").use(cols.col(0));
+        var uploadedFiles = Jt.fileUploader("Select an audio file (mp3, wav, m4a)").key("file-uploader")
+                .use(cols.col(0));
+
+        Jt.markdown("## 📝 Context (Optional)").key("context-title").use(cols.col(0));
+        String context = Jt.textArea(
+                "Add any context about this podcast episode to improve transcription quality: e.g., Topic, speakers names, technical terms...")
+                .key("context-input").use(cols.col(0));
+
+        boolean generateClicked = Jt.button("🚀 Generate Transcription").key("generate-button").use(cols.col(0));
+
+        // Right column - Options section
+        Jt.markdown("## ⚙️ Options").key("options-title").use(cols.col(1));
+
         boolean showHistory = Jt.toggle("Show Transcription History")
                 .value((Boolean) Jt.sessionState().getOrDefault("showHistory", false))
                 .key("toggle-show-history")
-                .use();
+                .use(cols.col(1));
         Jt.sessionState().put("showHistory", showHistory);
 
         boolean readingMode = Jt.toggle("Reading Mode (vs Strict Transcription)")
                 .value((Boolean) Jt.sessionState().getOrDefault("readingMode", true))
                 .key("toggle-reading-mode")
-                .use();
+                .use(cols.col(1));
         Jt.sessionState().put("readingMode", readingMode);
+
         Jt.markdown("---").key("separator-2").use();
 
         // Display chat history
@@ -76,28 +91,16 @@ public class TranscribeApp {
             Jt.markdown("---").key("separator-history").use();
         }
 
-        // Upload section
-        Jt.markdown("## 🎶 Upload Audio File").key("upload-title").use();
-        var uploadedFiles = Jt.fileUploader("Select an audio file (mp3, wav, m4a)").key("file-uploader").use();
-
-        // Context input section
-        Jt.markdown("## 📝 Context (Optional)").key("context-title").use();
-        String context = Jt.textArea(
-                "Add any context about this podcast episode to improve transcription quality: e.g., Topic, speakers names, technical terms...")
-                .key("context-input").use();
-
-        // Generate button
-        boolean generateClicked = Jt.button("🚀 Generate Transcription").key("generate-button").use();
-
         // Process transcription when Generate button is clicked
         if (generateClicked && uploadedFiles != null && !uploadedFiles.isEmpty()) {
-           transcribe(uploadedFiles, chatHistory, context);
+            transcribe(uploadedFiles, chatHistory, context);
         } else if (generateClicked) {
             Jt.markdown("⚠️ **Please upload an audio file first.**").key("error-no-file").use();
         }
     }
 
-    private void transcribe(final List<JtUploadedFile> uploadedFiles, final List<Message> chatHistory, final String context) {
+    private void transcribe(final List<JtUploadedFile> uploadedFiles, final List<Message> chatHistory,
+            final String context) {
         var uploadedFile = uploadedFiles.getFirst();
         String fileName = uploadedFile.filename().toLowerCase();
 
@@ -172,10 +175,8 @@ public class TranscribeApp {
         return mimeType;
     }
 
-
     private boolean isFileExtensionValid(final String filename) {
         return filename.endsWith(".mp3") || filename.endsWith(".wav") || filename.endsWith(".m4a");
     }
-
 
 }
