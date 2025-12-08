@@ -66,6 +66,12 @@ public class TranscribeApp {
                 .use(cols.col(1));
         Jt.sessionState().put("readingMode", readingMode);
 
+        boolean includeTimestamps = Jt.toggle("Include some Timestamps (HH:MM:SS)")
+                .value((Boolean) Jt.sessionState().getOrDefault("includeTimestamps", false))
+                .key("toggle-timestamps")
+                .use(cols.col(1));
+        Jt.sessionState().put("includeTimestamps", includeTimestamps);
+
         Jt.markdown("---").key("separator-2").use();
 
         // Display chat history
@@ -114,13 +120,17 @@ public class TranscribeApp {
 
         // Build prompt based on mode and context
         boolean currentReadingMode = (Boolean) Jt.sessionState().getOrDefault("readingMode", true);
-        String prompt;
+        boolean currentIncludeTimestamps = (Boolean) Jt.sessionState().getOrDefault("includeTimestamps", false);
+        String prompt = "";
         if (currentReadingMode) {
-            prompt = "Donne la transcription de cet épisode de podcast. " +
-                    "La transcription est arrangée pour être lisible comme un livre.";
+            prompt += "The transcription is arranged to be readable like a book.";
         } else {
-            prompt = "Donne la transcription de cet épisode de podcast. " +
-                    "La transcription doit être équivalente au son.";
+            prompt += "The transcription must be equivalent to the audio.";
+        }
+
+        if (currentIncludeTimestamps) {
+            prompt += " Add timestamps in [HH:MM:SS] format at the beginning of each section or topic change " +
+                    "to easily locate passages in the audio.";
         }
 
         if (context != null && !context.trim().isEmpty()) {
