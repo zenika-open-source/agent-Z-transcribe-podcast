@@ -129,7 +129,7 @@ public class TranscribeApp {
         }
 
         if (currentIncludeTimestamps) {
-            prompt += " Add timestamps in [HH:MM] format at the beginning of each section or topic change " +
+            prompt += " Add timestamps in [HH:MM:SS] format at the beginning of each section or topic change " +
                     "to easily locate passages in the audio.";
         }
 
