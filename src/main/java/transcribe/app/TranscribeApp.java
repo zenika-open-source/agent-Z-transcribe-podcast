@@ -66,7 +66,7 @@ public class TranscribeApp {
                 .use(cols.col(1));
         Jt.sessionState().put("readingMode", readingMode);
 
-        boolean includeTimestamps = Jt.toggle("Include some Timestamps (HH:MM)")
+        boolean includeTimestamps = Jt.toggle("Include some Timestamps (HH:MM:SS)")
                 .value((Boolean) Jt.sessionState().getOrDefault("includeTimestamps", false))
                 .key("toggle-timestamps")
                 .use(cols.col(1));
