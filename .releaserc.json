@@ -1,0 +1,36 @@
+{
+    "branches": [
+        "main"
+    ],
+    "plugins": [
+        [
+            "semantic-release-gitmoji",
+            {
+                "releaseRules": {
+                    "major": [
+                        ":boom:"
+                    ],
+                    "minor": [
+                        ":sparkles:"
+                    ],
+                    "patch": [
+                        ":bug:",
+                        ":ambulance:",
+                        ":lock:",
+                        ":zap:",
+                        ":lipstick:",
+                        ":recycle:",
+                        ":memo:"
+                    ]
+                },
+                "releaseNotes": {
+                    "template": "{{{commitGroups}}}",
+                    "partials": {
+                        "commitTemplate": "- {{message}} {{#if hash}}({{hash}}){{/if}}"
+                    }
+                }
+            }
+        ],
+        "@semantic-release/github"
+    ]
+}

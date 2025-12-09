@@ -5,14 +5,16 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
+# Build classpath at build time (not runtime) for faster startup
 RUN mvn dependency:go-offline -B
 RUN mvn compile -B
+RUN mvn dependency:build-classpath -Dmdep.outputFile=cp.txt
 
 # Set default port
 ENV PORT=8080
 
 EXPOSE ${PORT}
 
-# Use shell form to support command chaining with &&
-ENTRYPOINT ["sh", "-c", "mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) ZPodcastTranscribe"]
+# Use the pre-computed classpath for faster startup
+ENTRYPOINT ["sh", "-c", "java -cp target/classes:$(cat cp.txt) transcribe.ZPodcastTranscribe"]
 
