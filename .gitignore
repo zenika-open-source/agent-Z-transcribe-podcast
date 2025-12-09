@@ -11,3 +11,6 @@
 .env
 /out/
 cp.txt
+
+# Node.js (semantic-release)
+node_modules/
