@@ -1,11 +1,26 @@
 # 🤖 Agent Z transcribe podcast
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
+[![Release](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/actions/workflows/release.yml/badge.svg)](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/actions/workflows/release.yml)
+[![GitHub Release](https://img.shields.io/github/v/release/zenika-open-source/agent-Z-transcribe-podcast)](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/releases)
 
-This is an IA Agent to transcribe podcasts to be easily readable as a book 🤘
+This is an AI Agent to transcribe podcasts to be easily readable as a book 🤘
+
+## ✨ Features
+
+- **Podcast Transcription**: Transcribes French tech podcasts into readable text.
+- **Timestamps**: Option to include timestamps in the transcription.
+- **Download**: Save transcription as a Markdown file directly from the browser (compatible with Cloud Run).
+- **Modern AI**: Powered by Gemini 3 Pro.
+
+![Agent Z Transcribe](./docs/screen.png)
 
 ## 🛠️ Configuration
+
+**Prerequisites:**
+- Java 25
 
 1️⃣ Export these 2 variables:
 ```sh
@@ -13,9 +28,9 @@ export GOOGLE_GENAI_USE_VERTEXAI=FALSE
 export GOOGLE_API_KEY=<your gemini API>
 ```
 
-2️⃣ Create a `.env file`. The template `.env-template` in avaiable.
+2️⃣ Create a `.env` file. The template `.env-template` is available.
 
-## ✨ Development
+## 🧑‍💻 Development
 
 To run your agent (if you have only one specific agent):
 
@@ -23,60 +38,49 @@ To run your agent (if you have only one specific agent):
 mvn dependency:build-classpath -Dmdep.outputFile=cp.txt && java -cp target/classes:$(cat cp.txt) transcribe.ZPodcastTranscribe
 ```
 
-To run the UI, run this command and go to ```http://localhost:8888```
-
-![Agent Z Transcribe](docs/screen.png)
+Then go to [http://localhost:8080/](http://localhost:8080/).
 
 ## 🐳 Docker
 
-This app could be runned with Docker and this command 
-```
-docker build -t agent-z-transcribe-podcast
-docker run -p 8888:8888 -e PORT=8888  agent-z-transcribe-podcast
+This app can be run with Docker:
+
+```sh
+docker build -t agent-z-transcribe-podcast .
+docker run -p 8080:8080 -e PORT=8080 agent-z-transcribe-podcast
 ```
 
 ## 🚀 Deployment
 
 To deploy on Cloud Run:
 
-- authentification on GCP with `gcloud auth login`
+1. Authenticate on GCP:
+   ```sh
+   gcloud auth login
+   ```
 
-- configure settings exporting variables:
+2. Configure settings by exporting variables:
+   ```sh 
+   export GOOGLE_CLOUD_PROJECT=<your project>
+   export GOOGLE_CLOUD_LOCATION=<location like europe-west1>
+   export GOOGLE_GENAI_USE_VERTEXAI=<true if you deploy on Google Cloud, else false>
+   export GOOGLE_API_KEY=<your GOOGLE API KEY>
+   ```
 
-```sh 
-export GOOGLE_CLOUD_PROJECT=<your projet>
-export GOOGLE_CLOUD_LOCATION=<location like europe-west1>
-export GOOGLE_GENAI_USE_VERTEXAI=<true if you deploy on Google Cloud, else false>
-export GOOGLE_API_KEY=<your GOOGLE API KEY>
-```
+3. Deploy using `gcloud`:
+   ```sh
+   gcloud run deploy agent-z-transcribe-podcast \
+   --source . \
+   --region $GOOGLE_CLOUD_LOCATION \
+   --project $GOOGLE_CLOUD_PROJECT \
+   --allow-unauthenticated \
+   --memory 1Gi \
+   --max-instances 1 \
+   --set-env-vars="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
+   ```
 
-or adding them into a `.env` file (cf `env-template` file)
-```
-export GCLOUD_PROJECT=
-export GCLOUD_LOCATION=europe-west1
-export GCLOUD_GENAI_USE_VERTEXAI=FALSE
-export GOOGLE_API_KEY=
-```
+## ✨ Contribute
 
-- and run the `gcloud` command.
-
-```sh
-gcloud run deploy agent-z-transcribe-podcast \
---source . \
---region $GCLOUD_LOCATION \
---project $GCLOUD_PROJECT \
---allow-unauthenticated \
---memory 1Gi \
---max-instances 1 \
---set-env-vars="GOOGLE_CLOUD_PROJECT=$GCLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GCLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GCLOUD_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
-
-```
-
-
-## ✨Contribute
-
-Anyone can contribute to this project. For the moment, please add your question or purpose something in [a new issue](https://github.com/zenika-open-source/opensource-statistics/issues).
-
+Anyone can contribute to this project. For the moment, please add your question or purpose something in [a new issue](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/issues).
 
 ## 🙏 Contributors
 
