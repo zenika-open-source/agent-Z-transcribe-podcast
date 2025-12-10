@@ -12,8 +12,8 @@ import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class TranscribeApp {
 
@@ -96,10 +96,8 @@ public class TranscribeApp {
                     // Compact transcription display with limited height
                     Jt.markdown("**Transcription:**").key("transcription-label-" + index).use();
                     Jt.markdown(msg.text).key("transcription-" + index).use();
-                    boolean copyClicked = Jt.button("📋 Copy to Clipboard").key("copy-button-" + index).use();
-                    if (copyClicked) {
-                        copyToClipboard(msg.text);
-                    }
+                    Jt.markdown(createActionButtonsHtml(msg.text, "transcription"))
+                            .key("actions-" + index).use();
                 }
                 index++;
             }
@@ -135,10 +133,8 @@ public class TranscribeApp {
         Jt.markdown("**Transcription:**").key("completed-label").use();
         Jt.markdown(result.text()).key("completed-transcription").use();
 
-        boolean copyClicked = Jt.button("📋 Copy to Clipboard").key("copy-button-completed").use();
-        if (copyClicked) {
-            copyToClipboard(result.text());
-        }
+        Jt.markdown(createActionButtonsHtml(result.text(), result.filename()))
+                .key("actions-completed").use();
         Jt.markdown("---").key("separator-result-").use();
     }
 
@@ -220,15 +216,31 @@ public class TranscribeApp {
         return filename.endsWith(".mp3") || filename.endsWith(".wav") || filename.endsWith(".m4a");
     }
 
-    private void copyToClipboard(String text) {
+    private String createActionButtonsHtml(String text, String filename) {
         if (text == null || text.isEmpty()) {
-            return;
+            return "";
         }
-        try {
-            StringSelection selection = new StringSelection(text);
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
-        } catch (Exception e) {
-            System.err.println("Failed to copy to clipboard: " + e.getMessage());
+        String encodedText = URLEncoder.encode(text, StandardCharsets.UTF_8)
+                .replace("+", "%20");
+        // Ensure filename ends with .txt and doesn't have double extension if passed
+        // with one
+        String safeFilename = filename.replaceAll("[^a-zA-Z0-9.-]", "_");
+        if (!safeFilename.toLowerCase().endsWith(".txt")) {
+            safeFilename += ".txt";
         }
+
+        return """
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 10px;">
+                    <a href="data:text/plain;charset=utf-8,%s" download="%s"
+                       style="text-decoration: none; color: #333; background-color: #f0f0f0; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 0.9em;">
+                       📥 Download
+                    </a>
+                    <button onclick="navigator.clipboard.writeText(decodeURIComponent('%s')); this.innerText = '✅ Copied!'; setTimeout(() => this.innerText = '📋 Copy to Clipboard', 2000);"
+                            style="cursor: pointer; color: #333; background-color: #f0f0f0; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 0.9em;">
+                        📋 Copy to Clipboard
+                    </button>
+                </div>
+                """
+                .formatted(encodedText, safeFilename, encodedText);
     }
 }
