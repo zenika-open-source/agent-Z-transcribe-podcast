@@ -12,6 +12,8 @@ import io.reactivex.rxjava3.core.Flowable;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 
 public class TranscribeApp {
 
@@ -25,6 +27,9 @@ public class TranscribeApp {
     }
 
     record Message(String sender, String text) {
+    }
+
+    record TranscriptionResult(String filename, String text, String context) {
     }
 
     public void run() {
@@ -91,6 +96,10 @@ public class TranscribeApp {
                     // Compact transcription display with limited height
                     Jt.markdown("**Transcription:**").key("transcription-label-" + index).use();
                     Jt.markdown(msg.text).key("transcription-" + index).use();
+                    boolean copyClicked = Jt.button("📋 Copy to Clipboard").key("copy-button-" + index).use();
+                    if (copyClicked) {
+                        copyToClipboard(msg.text);
+                    }
                 }
                 index++;
             }
@@ -103,6 +112,34 @@ public class TranscribeApp {
         } else if (generateClicked) {
             Jt.markdown("⚠️ **Please upload an audio file first.**").key("error-no-file").use();
         }
+
+        // Display the persisted result if available and file hasn't changed
+        TranscriptionResult storedResult = (TranscriptionResult) Jt.sessionState().get("savedTranscription");
+        if (storedResult != null) {
+            if (uploadedFiles == null || uploadedFiles.isEmpty()
+                    || !uploadedFiles.getFirst().filename().equalsIgnoreCase(storedResult.filename())) {
+                Jt.sessionState().remove("savedTranscription");
+            } else {
+                displayResult(storedResult);
+            }
+        }
+    }
+
+    private void displayResult(TranscriptionResult result) {
+        Jt.markdown("---").key("separator-result").use();
+        Jt.markdown("### ✅ Transcription Complete!").key("completed-title").use();
+        Jt.markdown("**File:** " + result.filename()).key("completed-filename").use();
+        if (result.context() != null && !result.context().trim().isEmpty()) {
+            Jt.markdown("**Context:** " + result.context().trim()).key("completed-context").use();
+        }
+        Jt.markdown("**Transcription:**").key("completed-label").use();
+        Jt.markdown(result.text()).key("completed-transcription").use();
+
+        boolean copyClicked = Jt.button("📋 Copy to Clipboard").key("copy-button-completed").use();
+        if (copyClicked) {
+            copyToClipboard(result.text());
+        }
+        Jt.markdown("---").key("separator-result-").use();
     }
 
     private void transcribe(final List<JtUploadedFile> uploadedFiles, final List<Message> chatHistory,
@@ -160,16 +197,10 @@ public class TranscribeApp {
         chatHistory.add(new Message("user", userMessage));
         chatHistory.add(new Message("agent", transcription.toString()));
 
-        // Display the completed transcription immediately
-        Jt.markdown("---").key("separator-result").use();
-        Jt.markdown("### ✅ Transcription Complete!").key("completed-title").use();
-        Jt.markdown("**File:** " + uploadedFile.filename()).key("completed-filename").use();
-        if (context != null && !context.trim().isEmpty()) {
-            Jt.markdown("**Context:** " + context.trim()).key("completed-context").use();
-        }
-        Jt.markdown("**Transcription:**").key("completed-label").use();
-        Jt.markdown(transcription.toString()).key("completed-transcription").use();
-        Jt.markdown("---").key("separator-result-").use();
+        // Save result to session state to persist across reruns
+        TranscriptionResult result = new TranscriptionResult(uploadedFile.filename(), transcription.toString(),
+                context);
+        Jt.sessionState().put("savedTranscription", result);
 
     }
 
@@ -187,6 +218,18 @@ public class TranscribeApp {
 
     private boolean isFileExtensionValid(final String filename) {
         return filename.endsWith(".mp3") || filename.endsWith(".wav") || filename.endsWith(".m4a");
+    }
+
+    private void copyToClipboard(String text) {
+        if (text == null || text.isEmpty()) {
+            return;
+        }
+        try {
+            StringSelection selection = new StringSelection(text);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
+        } catch (Exception e) {
+            System.err.println("Failed to copy to clipboard: " + e.getMessage());
+        }
     }
 
 }
