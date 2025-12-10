@@ -231,5 +231,4 @@ public class TranscribeApp {
             System.err.println("Failed to copy to clipboard: " + e.getMessage());
         }
     }
-
 }
