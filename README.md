@@ -1,6 +1,6 @@
 # 🤖 Agent Z transcribe podcast
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 This is an IA Agent to transcribe podcasts to be easily readable as a book 🤘
@@ -89,6 +89,7 @@ Anyone can contribute to this project. For the moment, please add your question 
       <td align="center" valign="top" width="14.28%"><a href="https://jeanphi-baconnais.gitlab.io/"><img src="https://avatars.githubusercontent.com/u/32639372?v=4" width="100px;" alt=""/><br /><sub><b>Jean-Phi Baconnais</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://www.bbourgeois.dev"><img src="https://avatars.githubusercontent.com/u/20949060?v=4" width="100px;" alt=""/><br /><sub><b>Benjamin</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/glefloch"><img src="https://avatars.githubusercontent.com/u/1827790?v=4" width="100px;" alt=""/><br /><sub><b>Guillaume Le Floch</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://ctftime.org/user/30785"><img src="https://avatars.githubusercontent.com/u/32420956?v=4" width="100px;" alt=""/><br /><sub><b>Gudsfile</b></sub></a></td>
     </tr>
   </tbody>
 </table>
