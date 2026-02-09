@@ -8,27 +8,43 @@
             {
                 "releaseRules": {
                     "major": [
-                        ":boom:"
+                        ":boom:",
+                        ":tada:"
                     ],
                     "minor": [
-                        ":sparkles:"
+                        ":sparkles:",
+                        ":rocket:"
                     ],
                     "patch": [
-                        ":bug:",
                         ":ambulance:",
-                        ":lock:",
-                        ":zap:",
-                        ":lipstick:",
-                        ":recycle:",
-                        ":memo:"
+                        ":bug:",
+                        ":fire:",
+                        ":adhesive_bandage:",
+                        ":wrench:"
                     ]
-                },
-                "releaseNotes": {
-                    "template": "{{{commitGroups}}}",
-                    "partials": {
-                        "commitTemplate": "- {{message}} {{#if hash}}({{hash}}){{/if}}"
-                    }
                 }
+            }
+        ],
+        [
+            "@semantic-release/changelog",
+            {
+                "changelogFile": "CHANGELOG.md"
+            }
+        ],
+        [
+            "@semantic-release/exec",
+            {
+                "prepareCmd": "mvn versions:set -DnewVersion=${nextRelease.version} -DgenerateBackupPoms=false"
+            }
+        ],
+        [
+            "@semantic-release/git",
+            {
+                "assets": [
+                    "CHANGELOG.md",
+                    "pom.xml"
+                ],
+                "message": "🔖 ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
             }
         ],
         "@semantic-release/github"
