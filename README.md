@@ -70,12 +70,12 @@ To deploy on Cloud Run:
    ```sh
    gcloud run deploy agent-z-transcribe-podcast \
    --source . \
-   --region $GOOGLE_CLOUD_LOCATION \
-   --project $GOOGLE_CLOUD_PROJECT \
+   --project $GCLOUD_PROJECT \
+   --region $GCLOUD_LOCATION \
    --allow-unauthenticated \
    --memory 1Gi \
    --max-instances 1 \
-   --set-env-vars="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GOOGLE_CLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GOOGLE_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
+   --set-env-vars="GOOGLE_CLOUD_PROJECT=$GCLOUD_PROJECT,GOOGLE_CLOUD_LOCATION=$GCLOUD_LOCATION,GOOGLE_GENAI_USE_VERTEXAI=$GCLOUD_GENAI_USE_VERTEXAI,GOOGLE_API_KEY=$GOOGLE_API_KEY"
    ```
 
 ## ✨ Contribute
