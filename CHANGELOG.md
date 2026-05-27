@@ -1,3 +1,8 @@
+# [v1.2.1](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.2.0...v1.2.1) (2026-05-27)
+
+## 🐛 Bug Fixes
+- [`ffb8dcb`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/commit/ffb8dcb)  ⬆️ Upgrade Gemini 3.5 Flash (#48) (Issues: [`#48`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/issues/48))
+
 # [v1.2.0](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.1.1...v1.2.0) (2026-03-31)
 
 ## ✨ New Features
