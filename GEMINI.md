@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project is a Java-based AI agent designed to transcribe podcasts. It leverages the Google Agent Development Kit (ADK) to create an LLM-powered agent. The core of the project is the `AgentZTranscribePodcast` class, which configures and initializes an `LlmAgent` using the `gemini-2.5-pro` model. The agent is specifically instructed to transcribe French-language podcasts about tech topics, cleaning up the text to be more readable.
+This project is a Java-based AI agent designed to transcribe podcasts. It leverages the Google Agent Development Kit (ADK) to create an LLM-powered agent. The core of the project is the `AgentZTranscribePodcast` class, which configures and initializes an `LlmAgent` using the `gemini-3.6-flash` model. The agent is specifically instructed to transcribe French-language podcasts about tech topics, cleaning up the text to be more readable.
 
 The project is built using Apache Maven, and its dependencies include the `google-adk` and `google-adk-dev` libraries.
 

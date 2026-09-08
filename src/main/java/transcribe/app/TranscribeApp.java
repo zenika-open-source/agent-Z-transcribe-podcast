@@ -177,26 +177,43 @@ public class TranscribeApp {
                 Part.fromText(prompt));
 
         // Process transcription
-        Flowable<Event> events = runner.runAsync(session.userId(), session.id(), audioMsg);
+        try {
+            Flowable<Event> events = runner.runAsync(session.userId(), session.id(), audioMsg);
 
-        StringBuilder transcription = new StringBuilder();
-        events.blockingForEach(event -> {
-            String responseText = event.stringifyContent();
-            transcription.append(responseText);
-        });
+            StringBuilder transcription = new StringBuilder();
+            events.blockingForEach(event -> {
+                if (event.errorMessage().isPresent()) {
+                    System.err.println("❌ Gemini Event Error: " + event.errorMessage().get());
+                }
+                String responseText = event.stringifyContent();
+                if (responseText != null) {
+                    transcription.append(responseText);
+                }
+            });
 
-        // Add to history
-        String userMessage = "🎙️ " + uploadedFile.filename();
-        if (context != null && !context.trim().isEmpty()) {
-            userMessage += " (Context: " + context.trim() + ")";
+            if (transcription.length() == 0) {
+                Jt.markdown("⚠️ **No transcription returned by Gemini.**").key("error-empty-response").use();
+                return;
+            }
+
+            // Add to history
+            String userMessage = "🎙️ " + uploadedFile.filename();
+            if (context != null && !context.trim().isEmpty()) {
+                userMessage += " (Context: " + context.trim() + ")";
+            }
+            chatHistory.add(new Message("user", userMessage));
+            chatHistory.add(new Message("agent", transcription.toString()));
+
+            // Save result to session state to persist across reruns
+            TranscriptionResult result = new TranscriptionResult(uploadedFile.filename(), transcription.toString(),
+                    context);
+            Jt.sessionState().put("savedTranscription", result);
+        } catch (Exception e) {
+            System.err.println("❌ Error calling Gemini: " + e.getMessage());
+            e.printStackTrace();
+            Jt.markdown("❌ **Error during transcription with Gemini:** " + e.getMessage())
+                    .key("error-transcription-exception").use();
         }
-        chatHistory.add(new Message("user", userMessage));
-        chatHistory.add(new Message("agent", transcription.toString()));
-
-        // Save result to session state to persist across reruns
-        TranscriptionResult result = new TranscriptionResult(uploadedFile.filename(), transcription.toString(),
-                context);
-        Jt.sessionState().put("savedTranscription", result);
 
     }
 
