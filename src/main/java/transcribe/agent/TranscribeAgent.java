@@ -16,7 +16,7 @@ public class TranscribeAgent {
         return LlmAgent.builder()
                 .name("agent-z-transcribe-podcast")
                 .description("Transcribe Podcast")
-                .model("gemini-3.5-flash")
+                .model("gemini-3.6-flash")
                 .instruction("""
                         Zenikast is the new podcast of Zenika, in French, so transcription must be in French.
                         Episodes talk about development, agility, devops, Cloud infrastructure
