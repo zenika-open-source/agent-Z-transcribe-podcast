@@ -1,3 +1,8 @@
+# [v1.2.2](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.2.1...v1.2.2) (2026-09-30)
+
+## 🐛 Bug Fixes
+- [`054c2d0`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/commit/054c2d0)  ⬆️ Bump tar in the npm_and_yarn group across 1 directory (#64) (Issues: [`#64`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/issues/64))
+
 # [v1.2.1](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.2.0...v1.2.1) (2026-05-27)
 
 ## 🐛 Bug Fixes
