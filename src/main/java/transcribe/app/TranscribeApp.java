@@ -5,7 +5,9 @@ import com.google.adk.runner.InMemoryRunner;
 import com.google.adk.sessions.Session;
 import com.google.genai.types.Content;
 import com.google.genai.types.Part;
+import io.javelit.components.layout.ColumnsComponent;
 import io.javelit.core.Jt;
+import io.javelit.core.JtContainer;
 import io.javelit.core.JtUploadedFile;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -54,7 +56,16 @@ public class TranscribeApp {
                 "Add any context about this podcast episode to improve transcription quality: e.g., Topic, speakers names, technical terms...")
                 .key("context-input").use(cols.col(0));
 
-        boolean generateClicked = Jt.button("🚀 Generate Transcription").key("generate-button").use(cols.col(0));
+        var generateCols = Jt.columns(2)
+                .verticalAlignment(ColumnsComponent.VerticalAlignment.CENTER)
+                .key("generate-columns")
+                .use(cols.col(0));
+        var buttonContainer = Jt.empty().key("generate-button-container").use(generateCols.col(0));
+        var loadingContainer = Jt.empty().key("loading-container").use(generateCols.col(1));
+
+        boolean generateClicked = Jt.button("🚀 Generate Transcription")
+                .key("generate-button")
+                .use(buttonContainer);
 
         // Right column - Options section
         Jt.markdown("## ⚙️ Options").key("options-title").use(cols.col(1));
@@ -106,7 +117,7 @@ public class TranscribeApp {
 
         // Process transcription when Generate button is clicked
         if (generateClicked && uploadedFiles != null && !uploadedFiles.isEmpty()) {
-            transcribe(uploadedFiles, chatHistory, context);
+            transcribe(uploadedFiles, chatHistory, context, buttonContainer, loadingContainer);
         } else if (generateClicked) {
             Jt.markdown("⚠️ **Please upload an audio file first.**").key("error-no-file").use();
         }
@@ -139,7 +150,7 @@ public class TranscribeApp {
     }
 
     private void transcribe(final List<JtUploadedFile> uploadedFiles, final List<Message> chatHistory,
-            final String context) {
+            final String context, final JtContainer buttonContainer, final JtContainer loadingContainer) {
         var uploadedFile = uploadedFiles.getFirst();
         String fileName = uploadedFile.filename().toLowerCase();
 
@@ -148,6 +159,14 @@ public class TranscribeApp {
                     .key("error-invalid-type").use();
             return;
         }
+
+        Jt.button("🚀 Generate Transcription")
+                .disabled(true)
+                .key("generate-button-disabled")
+                .use(buttonContainer);
+        Jt.markdown("⏳ **Generating transcription...**")
+                .key("loading-message")
+                .use(loadingContainer);
 
         var mimeType = getMimeType(fileName);
 
@@ -213,6 +232,13 @@ public class TranscribeApp {
             e.printStackTrace();
             Jt.markdown("❌ **Error during transcription with Gemini:** " + e.getMessage())
                     .key("error-transcription-exception").use();
+        } finally {
+            Jt.button("🚀 Generate Transcription")
+                    .key("generate-button")
+                    .use(buttonContainer);
+            Jt.empty()
+                    .key("loading-clear")
+                    .use(loadingContainer);
         }
 
     }
