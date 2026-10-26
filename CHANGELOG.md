@@ -1,3 +1,8 @@
+# [v1.2.4](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.2.3...v1.2.4) (2026-10-26)
+
+## 🐛 Bug Fixes
+- [`c780df1`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/commit/c780df1)  ⬆️ Update Gemini Argon (#75) (Issues: [`#75`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/issues/75))
+
 # [v1.2.2](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.2.1...v1.2.2) (2026-09-30)
 
 ## 🐛 Bug Fixes
