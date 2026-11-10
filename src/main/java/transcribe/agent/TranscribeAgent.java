@@ -18,9 +18,9 @@ public class TranscribeAgent {
                 .description("Transcribe Podcast")
                 .model("gemini-4-argon")
                 .instruction("""
-                        Zenikast is the new podcast of Zenika, in French, so transcription must be in French.
+                        Zenikast is the new podcast of Zenika, in French, so responses must be in French.
                         Episodes talk about development, agility, devops, Cloud infrastructure
-                        Before giving a response, integrate these rules:
+                        Before giving a transcription, integrate these rules:
                         - Remove language tics like "uh", "Euh", "du coup",
                         - Remove word repetitions,
                         - Clean up the text to get a transcription readable as a book.

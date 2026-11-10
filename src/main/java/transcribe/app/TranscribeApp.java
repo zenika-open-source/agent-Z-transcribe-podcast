@@ -76,17 +76,31 @@ public class TranscribeApp {
                 .use(cols.col(1));
         Jt.sessionState().put("showHistory", showHistory);
 
+        boolean generateTranscription = Jt.toggle("Generate Transcription")
+                .value((Boolean) Jt.sessionState().getOrDefault("generateTranscription", true))
+                .key("toggle-generate-transcription")
+                .use(cols.col(1));
+        Jt.sessionState().put("generateTranscription", generateTranscription);
+
         boolean readingMode = Jt.toggle("Reading Mode (vs Strict Transcription)")
                 .value((Boolean) Jt.sessionState().getOrDefault("readingMode", true))
+                .disabled(!generateTranscription)
                 .key("toggle-reading-mode")
                 .use(cols.col(1));
         Jt.sessionState().put("readingMode", readingMode);
 
         boolean includeTimestamps = Jt.toggle("Include some Timestamps (HH:MM:SS)")
                 .value((Boolean) Jt.sessionState().getOrDefault("includeTimestamps", false))
+                .disabled(!generateTranscription)
                 .key("toggle-timestamps")
                 .use(cols.col(1));
         Jt.sessionState().put("includeTimestamps", includeTimestamps);
+
+        boolean generateYoutubeChapters = Jt.toggle("Generate YouTube Chapters")
+                .value((Boolean) Jt.sessionState().getOrDefault("generateYoutubeChapters", false))
+                .key("toggle-youtube-chapters")
+                .use(cols.col(1));
+        Jt.sessionState().put("generateYoutubeChapters", generateYoutubeChapters);
 
         Jt.markdown("---").key("separator-2").use();
 
@@ -116,7 +130,10 @@ public class TranscribeApp {
         }
 
         // Process transcription when Generate button is clicked
-        if (generateClicked && uploadedFiles != null && !uploadedFiles.isEmpty()) {
+        if (generateClicked && !generateTranscription && !generateYoutubeChapters) {
+            Jt.markdown("⚠️ **Please select at least one option (`Generate Transcription` or `Generate YouTube Chapters`).**")
+                    .key("error-no-option").use();
+        } else if (generateClicked && uploadedFiles != null && !uploadedFiles.isEmpty()) {
             transcribe(uploadedFiles, chatHistory, context, buttonContainer, loadingContainer);
         } else if (generateClicked) {
             Jt.markdown("⚠️ **Please upload an audio file first.**").key("error-no-file").use();
@@ -171,18 +188,35 @@ public class TranscribeApp {
         var mimeType = getMimeType(fileName);
 
         // Build prompt based on mode and context
+        boolean currentGenerateTranscription = (Boolean) Jt.sessionState().getOrDefault("generateTranscription", true);
         boolean currentReadingMode = (Boolean) Jt.sessionState().getOrDefault("readingMode", true);
         boolean currentIncludeTimestamps = (Boolean) Jt.sessionState().getOrDefault("includeTimestamps", false);
+        boolean currentGenerateYoutubeChapters = (Boolean) Jt.sessionState().getOrDefault("generateYoutubeChapters", false);
         String prompt = "";
-        if (currentReadingMode) {
-            prompt += "The transcription is arranged to be readable like a book.";
+
+        if (currentGenerateTranscription) {
+            if (currentReadingMode) {
+                prompt += "The transcription is arranged to be readable like a book.";
+            } else {
+                prompt += "The transcription must be equivalent to the audio.";
+            }
+
+            if (currentIncludeTimestamps) {
+                prompt += " Add timestamps in [HH:MM:SS] format at the beginning of each section or topic change " +
+                        "to easily locate passages in the audio.";
+            }
         } else {
-            prompt += "The transcription must be equivalent to the audio.";
+            prompt += "Do NOT transcribe the full audio.";
         }
 
-        if (currentIncludeTimestamps) {
-            prompt += " Add timestamps in [HH:MM:SS] format at the beginning of each section or topic change " +
-                    "to easily locate passages in the audio.";
+        if (currentGenerateYoutubeChapters) {
+            prompt += " Generate YouTube chapters in French for this episode. " +
+                    "Format each chapter strictly as `MM:SS - Chapter Title` (or `HH:MM:SS - Chapter Title` if the audio is over an hour). " +
+                    "The first chapter MUST start at `00:00` (e.g., `00:00 - Introduction`), there must be at least 3 chapters in chronological order, " +
+                    "and each chapter must be at least 10 seconds long.";
+            if (currentGenerateTranscription) {
+                prompt += " Present the YouTube chapters in a dedicated section before the full transcription.";
+            }
         }
 
         if (context != null && !context.trim().isEmpty()) {
