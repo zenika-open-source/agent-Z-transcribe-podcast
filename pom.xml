@@ -9,7 +9,7 @@
     <version>1.3.0</version>
 
     <properties>
-        <adk-java-version>1.13.0</adk-java-version>
+        <adk-java-version>1.14.0</adk-java-version>
     </properties>
 
     <dependencies>
