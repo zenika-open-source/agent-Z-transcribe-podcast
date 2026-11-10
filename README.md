@@ -11,6 +11,7 @@ This is an AI Agent to transcribe podcasts to be easily readable as a book 🤘
 ## ✨ Features
 
 - **Podcast Transcription**: Transcribes French tech podcasts into readable text.
+- **YouTube Chapters**: Option to generate YouTube-ready chapters (`00:00 - Title`) with or without the full transcription.
 - **Timestamps**: Option to include timestamps in the transcription.
 - **Download**: Save transcription as a Markdown file directly from the browser (compatible with Cloud Run).
 - **Modern AI**: Powered by Gemini 3 Pro.
