@@ -1,3 +1,8 @@
+# [v1.3.0](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.2.4...v1.3.0) (2026-11-10)
+
+## ✨ New Features
+- [`545e463`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/commit/545e463)  feat: add option to generate YouTube chapters (#76) (#78) (Issues: [`#76`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/issues/76) [`#78`](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/issues/78))
+
 # [v1.2.4](https://github.com/zenika-open-source/agent-Z-transcribe-podcast/compare/v1.2.3...v1.2.4) (2026-10-26)
 
 ## 🐛 Bug Fixes
